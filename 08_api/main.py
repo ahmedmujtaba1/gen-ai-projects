@@ -2,6 +2,8 @@
 
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import List
 from database import SessionLocal, engine, Todo
 
 app = FastAPI()
@@ -14,14 +16,14 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/todos/")
+@app.post("/todos/", response_model=Todo)
 def create_todo(todo: Todo, db: Session = Depends(get_db)):
     db.add(todo)
     db.commit()
     db.refresh(todo)
     return todo
 
-@app.put("/todos/{todo_id}")
+@app.put("/todos/{todo_id}", response_model=List[Todo])
 def update_todo(todo_id: int, updated_todo: Todo, db: Session = Depends(get_db)):
     db_todo = db.query(Todo).filter(Todo.id == todo_id).first()
     if db_todo is None:
