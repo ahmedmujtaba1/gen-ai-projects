@@ -5,7 +5,6 @@ BASE_URL = "http://127.0.0.1:8000"
 
 st.title("Todo App | Made By Ahmed Mujtaba")
 
-# Store the token in Streamlit's session state
 if 'token' not in st.session_state:
     st.session_state['token'] = ""
 
@@ -38,6 +37,11 @@ def login():
             else:
                 st.error("Failed to log in")
 
+def logout():
+    if st.button("Logout"):
+        st.session_state['token'] = ""
+        st.experimental_rerun()
+
 def create_todo():
     with st.form("Create Todo"):
         st.write("### Create a New Todo")
@@ -53,6 +57,37 @@ def create_todo():
             else:
                 st.error("Failed to add todo")
 
+def get_todos():
+    todos = ''
+    if st.button("Refresh Todos"):
+        if st.session_state['token']:
+            headers = {"Authorization": f"Bearer {st.session_state['token']}"}
+            response = requests.get(f"{BASE_URL}/todos/", headers=headers)
+            if response.status_code == 200:
+                todos = response.json()
+                if todos:
+                    for todo in todos:
+                        st.write(f"ID: {todo['id']}, Title: {todo['title']}, Description: {todo['description']}")
+                else:
+                    st.write("No todos found.")
+            else:
+                st.error("Failed to fetch todos")
+
+def update_todo():
+    with st.form("Update Todo"):
+        st.write("### Update an Existing Todo")
+        todo_id = st.number_input("Enter Todo ID to Update", step=1, format="%d", key="update_id")
+        new_title = st.text_input("New Title", key="update_title")
+        new_description = st.text_area("New Description", key="update_description")
+        update_button = st.form_submit_button("Update Todo")
+
+        if update_button and st.session_state['token']:
+            headers = {"Authorization": f"Bearer {st.session_state['token']}"}
+            response = requests.put(f"{BASE_URL}/todos/{int(todo_id)}", headers=headers, json={"title": new_title, "description": new_description})
+            if response.status_code == 200:
+                st.success("Todo updated successfully")
+            else:
+                st.error("Failed to update todo")
 def delete_todo():
     with st.form("Delete Todo"):
         st.write("### Delete a Todo")
@@ -66,17 +101,12 @@ def delete_todo():
                 st.success("Todo deleted successfully")
             else:
                 st.error("Failed to delete todo")
-
-def logout():
-    if st.button("Logout"):
-        st.session_state['token'] = ""
-        st.rerun()
-
 if not st.session_state['token']:
     create_user()
     login()
-    st.write("Made By Ahmed Mujtaba")
 else:
     logout()
     create_todo()
+    update_todo()
+    get_todos()
     delete_todo()
