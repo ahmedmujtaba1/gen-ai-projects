@@ -67,4 +67,6 @@ def delete_todo(token):
 if __name__ == "__main__":
     create_user()
     token = login()
-    create_todo(token)
+    if token:
+        create_todo(token)
+        delete_todo(token)
