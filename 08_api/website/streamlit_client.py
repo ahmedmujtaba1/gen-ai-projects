@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import pandas as pd
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -67,7 +68,8 @@ def get_todos():
                 todos = response.json()
                 if todos:
                     for todo in todos:
-                        st.write(f"ID: {todo['id']}, Title: {todo['title']}, Description: {todo['description']}")
+                        df = pd.DataFrame(todos)
+                        st.table(df)
                 else:
                     st.write("No todos found.")
             else:
