@@ -4,7 +4,7 @@ BASE_URL = "http://127.0.0.1:8000"
 
 def test_create_user():
     url = f"{BASE_URL}/users/"
-    data = {"username": "testuser", "password": "testpassword"}
+    data = {"username": "testuser2", "password": "testpassword"}
     response = requests.post(url, json=data)
     assert response.status_code == 200, "Failed to create user"
     assert response.json()["username"] == data["username"], "Username mismatch"
@@ -57,12 +57,12 @@ def test_delete_todo(token, todo_id):
 # Run the tests
 if __name__ == "__main__":
     try:
-        # test_create_user()
+        test_create_user()
         token = test_token_generation()
         todo_id = test_create_todo(token)
         test_get_todos(token)
         test_update_todo(token, todo_id)
-        # test_delete_todo(token, todo_id)
+        test_delete_todo(token, todo_id)
         print("All tests passed successfully!")
     except AssertionError as e:
         print(f"Test failed: {e}")
