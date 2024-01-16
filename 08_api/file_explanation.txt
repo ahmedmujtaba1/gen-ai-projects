@@ -1,0 +1,28 @@
+main.py:
+
+Import and initialize FastAPI app.
+Include routes from the /app/routes module.
+/app/models:
+
+user_model.py: Defines UserModel.
+todo_model.py: Defines TodoModel.
+/app/schemas:
+
+todo.py: Defines TodoBase, TodoCreate, and Todo.
+user.py: Defines UserBase, UserCreate, and User.
+token.py: Defines Token and TokenData.
+/app/routes:
+
+user_routes.py: Endpoints related to user operations.
+todo_routes.py: Endpoints related to todo operations.
+auth_routes.py: Endpoints for authentication and token generation.
+/app/core:
+
+config.py: Contains constants like SECRET_KEY, ALGORITHM, etc.
+/app/db:
+
+database.py: Configures the database URL and session.
+Initializes the database and creates tables.
+/app/security:
+
+security.py: Contains password hashing and verification, token creation, and user authentication functions.
